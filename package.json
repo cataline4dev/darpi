@@ -1,6 +1,6 @@
 {
   "name": "@cataline.io/darpi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Form validation library for Vue.js",
   "author": "Cataline <contato@cataline.io>",
   "license": "MIT",
