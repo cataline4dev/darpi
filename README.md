@@ -16,7 +16,7 @@ For use with Single File Components it is as easy as importing the `Form` and `F
 
 ```html
 <template>
-  <form :schema="formFields" @submit="onSubmit">
+  <form :schema="fields" @submit="onSubmit">
     <Field name="name" />
     <Field name="age" />
 
@@ -31,15 +31,15 @@ For use with Single File Components it is as easy as importing the `Form` and `F
     components: { Form, Field },
     data() {
       return {
-        formFields: {
+        fields: {
           name: schema.string().required().minWords(2),
           age: schema.number().required().min(18)
         }
       }
     },
     methods: {
-      onSubmit(fields) {
-        console.log(fields)
+      onSubmit(values) {
+        console.log(values)
       }
     }
   }
@@ -64,7 +64,7 @@ There are two ways to define personalized messages.
 First, within the method of each rule.
 
 ```js
-formFields: {
+fields: {
   name: schema.string().required('Yo! Put your name'),
   age: schema.number().min(18, 'You need to be adult'),
 }
@@ -96,17 +96,17 @@ If you are using TypeScript it is interesting that you have the correct typing.
   import Vue from 'vue'
   import { Form, Field, schema, FormContext } from '@cataline.io/darpi'
 
-  const formFields = schema.typed({
+  const fields = schema.typed({
     name: schema.string().required(),
     age: schema.number().required()
   })
 
-  type Fields = typeof formFields
+  type Fields = typeof fields
 
   export default Vue.extend({
     components: { Form, Field },
     data() {
-      return { formFields }
+      return { fields }
     },
     methods: {
       onSubmit(values: Fields, formContext: FormContext<Fields>) {
