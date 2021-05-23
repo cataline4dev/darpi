@@ -1,6 +1,7 @@
 <template>
   <div :class="['field', classes]">
-    {{ name }}
+    <label v-if="label" :for="name"> {{ label }} </label>
+
     <input
       :id="name"
       :name="name"
@@ -41,6 +42,10 @@ export default Vue.extend({
     name: {
       type: String,
       required: true
+    },
+    label: {
+      type: String,
+      default: null
     },
     placeholder: {
       type: String,
