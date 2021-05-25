@@ -7,7 +7,7 @@
       :name="name"
       :type="type"
       :placeholder="placeholder"
-      :readonly="readonly"
+      :readonly="parentData.isLoading ? true : readonly"
       :value="parentData.fields[name]"
       @input="update($event.target.value)"
     />
