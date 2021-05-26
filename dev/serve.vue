@@ -1,32 +1,34 @@
 <template>
   <div id="app">
-    <Form ref="form" :schema="form" @submit="onSubmit">
+    <Form ref="form" :schema="fields" @submit="onSubmit">
       <Field name="name" />
       <Field name="age" />
 
-      <button type="submit">enviar</button>
+      <Button text="enviar" />
     </Form>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Form, Field, schema } from '@/entry.esm'
+import { Form, Field, Button, schema } from '@/entry.esm'
+import { FormContext } from '../src'
 
-const form = schema.typed({
+const fields = schema.typed({
   name: schema.string().required(),
   age: schema.number().required()
 })
 
-type Fields = typeof form
+type Fields = typeof fields
 
 export default Vue.extend({
-  components: { Form, Field },
+  components: { Form, Field, Button },
   data() {
-    return { form }
+    return { fields }
   },
   methods: {
-    onSubmit(values: Fields) {
+    onSubmit(values: Fields, { enableLoading }: FormContext<Fields>) {
+      enableLoading()
       console.log(values)
     }
   }

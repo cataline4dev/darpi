@@ -5,6 +5,7 @@ import type { FormContext } from './models/FormContext'
 
 let Form: VueConstructor<Vue>
 let Field: VueConstructor<Vue>
+let Button: VueConstructor<Vue>
 
-export { Form, Field, schema, configure }
+export { Form, Field, Button, schema, configure }
 export type { FormContext }
