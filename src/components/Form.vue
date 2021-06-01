@@ -1,6 +1,6 @@
 <template>
   <form :class="['form', classes]" @submit.prevent="submit">
-    <slot />
+    <slot v-bind="formContext" />
   </form>
 </template>
 
@@ -12,11 +12,15 @@ import hasEqualKeys from '../helpers/hasEqualKeys'
 import getFields from '../helpers/getFields'
 import validate from '../schema/validate'
 import format from '../schema/format'
+import { FormContext } from '../../src'
 
 interface Rule {
   name: string
   field: string
-  test: (value: string) => Promise<true | string>
+  test: (
+    value: string,
+    formContext?: FormContext<Record<string, any>>
+  ) => Promise<true | string>
 }
 
 export interface FormI {
@@ -48,6 +52,8 @@ export default Vue.extend({
       rules: [] as FormI['rules'],
       isValid: false,
       isLoading: false,
+      test: 'testando',
+      capeta: 'capetando',
       meta: {
         fields: {}
       }
@@ -68,7 +74,7 @@ export default Vue.extend({
       this.$set(this.meta.fields, field, null)
     })
 
-    this.fields = getFields(this.schema)
+    this.fields = getFields({ ...this.schema })
   },
   computed: {
     classes(): object {
@@ -76,14 +82,16 @@ export default Vue.extend({
         loading: this.isLoading
       }
     },
-    formContext(): object {
+    formContext<T>(): FormContext<T> {
       return {
         errors: this.errors,
         submitted: this.submitted,
         isValid: this.isValid,
         isLoading: this.isLoading,
         resetForm: this.resetForm,
-        setErrors: this.setErrors,
+        addValues: this.addValues,
+        addErrors: this.addErrors,
+        removeErrors: this.removeErrors,
         enableLoading: this.enableLoading,
         disableLoading: this.disableLoading
       }
@@ -104,7 +112,10 @@ export default Vue.extend({
 
         if (hasError) return
 
-        const result = await rule.test(this.fields[rule.field])
+        const result = await rule.test(
+          this.fields[rule.field],
+          this.formContext
+        )
 
         if (result === true) return true
 
@@ -139,7 +150,12 @@ export default Vue.extend({
       this.submitted = false
       this.isValid = false
     },
-    setErrors(fields: Partial<FormI['fields']>) {
+    addValues(fields: FormI['fields']) {
+      Object.keys(fields).forEach((key) => {
+        this.fields[key] = fields[key]
+      })
+    },
+    addErrors(fields: Partial<FormI['fields']>) {
       Object.keys(fields).forEach((key) => {
         this.errors.push({
           validation: 'unknow',
@@ -147,6 +163,11 @@ export default Vue.extend({
           message: fields[key]
         })
       })
+    },
+    removeErrors(fieldList?: any[]) {
+      this.errors = fieldList
+        ? this.errors.filter(({ field }) => !fieldList.includes(field))
+        : []
     },
     enableLoading() {
       this.isLoading = true

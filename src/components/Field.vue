@@ -9,18 +9,23 @@
       :placeholder="placeholder"
       :readonly="parentData.isLoading ? true : readonly"
       :value="parentData.fields[name]"
-      @input="update($event.target.value)"
+      :maxlength="mask ? mask.length : false"
+      @input="onChange($event)"
     />
 
-    <span v-show="error" class="error-message">
+    <span v-show="error && autoMessages === 'on'" class="error-message">
       {{ error }}
     </span>
+
+    <slot v-bind="{ error }" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { FormI } from './Form.vue'
+import { FieldEvent } from '../models/FieldEvent'
+import handleMask from '../mask'
 
 type Rule = FormI['rules'][0]['test']
 
@@ -55,9 +60,17 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    mask: {
+      type: String,
+      default: null
+    },
     rules: {
       type: Array as PropType<Rule[]>,
       default: () => []
+    },
+    autoMessages: {
+      type: String,
+      default: 'on'
     },
     type: {
       type: String,
@@ -104,8 +117,14 @@ export default Vue.extend({
     }
   },
   methods: {
-    update(value: any) {
-      this.parentData.fields[this.name] = value
+    onChange(event: FieldEvent<HTMLInputElement>) {
+      if (this.mask) handleMask(event, this.mask)
+
+      // to Form component
+      this.parentData.fields[this.name] = event.target.value
+
+      // active @chage to library user
+      this.$emit('change', event.target.value)
     }
   }
 })

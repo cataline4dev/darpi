@@ -6,7 +6,7 @@ import { Validation, Formatting, Exception } from '../models/Schema'
 import StringSchema from './string'
 import NumberSchema from './number'
 
-type Specialize<C extends MixedSchema<any>, T> = C extends NumberSchema<any>
+type Specify<C extends MixedSchema<any>, T> = C extends NumberSchema<any>
   ? NumberSchema<Extract<T, number | undefined>>
   : C extends StringSchema<any>
   ? StringSchema<Extract<T, string | undefined>>
@@ -18,7 +18,7 @@ export default class MixedSchema<T> {
   readonly formattings: Formatting[] = []
   readonly exceptions: Exception[] = []
 
-  required(message?: string): Specialize<this, Exclude<T, undefined>> {
+  required(message?: string): Specify<this, Exclude<T, undefined>> {
     this.validations.push({
       name: 'required',
       message: message || config.messages.mixed.required,
@@ -33,7 +33,7 @@ export default class MixedSchema<T> {
   oneOf<U extends T>(
     arrayOfValues: U[],
     message?: string
-  ): Specialize<this, U | undefined> {
+  ): Specify<this, U | Extract<undefined, T>> {
     type Params = { arrayOfValues: any[] }
 
     this.validations.push({
