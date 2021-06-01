@@ -1,6 +1,6 @@
 {
   "name": "@cataline.io/darpi",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Form validation library for Vue.js",
   "author": "Cataline <contato@cataline.io>",
   "license": "MIT",
@@ -16,7 +16,6 @@
   "scripts": {
     "dev": "vue-cli-service serve dev/serve.ts",
     "compile": "rm -rf dist && npm run build && rm -rf tmp",
-    "publish": "npm run compile && npm publish && git push",
     "build": "tsc --project tsconfig.prod.json && cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",

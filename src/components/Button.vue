@@ -1,7 +1,7 @@
 <template>
   <button class="button" type="submit" :disabled="parentData.isLoading">
     <span v-if="!parentData.isLoading" class="text">{{ text }}</span>
-    <component v-else :is="loadingComponent"></component>
+    <component v-else :is="loaderComponent"></component>
   </button>
 </template>
 
@@ -9,7 +9,12 @@
 import Vue from 'vue'
 import { FormI } from './Form.vue'
 
+// loaders
+import Ellipsis from './loaders/Ellipsis.vue'
+import Dashs from './loaders/Dashs.vue'
+
 export default Vue.extend({
+  components: { Ellipsis, Dashs },
   props: {
     text: {
       type: String,
@@ -24,8 +29,8 @@ export default Vue.extend({
     parentData(): FormI {
       return this.$parent as unknown as FormI
     },
-    loadingComponent() {
-      return () => import(`./loaders/${this.capitalize(this.loader)}.vue`)
+    loaderComponent(): string {
+      return this.capitalize(this.loader)
     }
   },
   methods: {
