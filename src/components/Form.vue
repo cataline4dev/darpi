@@ -42,6 +42,11 @@ export default Vue.extend({
     schema: {
       type: Object as PropType<Schema>,
       required: true
+    },
+    theme: {
+      type: String,
+      default: 'light',
+      validator: (value) => ['light', 'dark'].includes(value)
     }
   },
   data() {
@@ -52,8 +57,6 @@ export default Vue.extend({
       rules: [] as FormI['rules'],
       isValid: false,
       isLoading: false,
-      test: 'testando',
-      capeta: 'capetando',
       meta: {
         fields: {}
       }
@@ -79,7 +82,9 @@ export default Vue.extend({
   computed: {
     classes(): object {
       return {
-        loading: this.isLoading
+        loading: this.isLoading,
+        light: this.theme === 'light',
+        dark: this.theme === 'dark'
       }
     },
     formContext<T>(): FormContext<T> {
